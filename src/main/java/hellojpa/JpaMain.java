@@ -4,6 +4,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import java.util.List;
 
 public class JpaMain {
     public static void main(String[] args) {
@@ -15,17 +16,15 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-            //read
-            Member findMember = em.find(Member.class, 2L);
-            System.out.println("findMember.getId() = " + findMember.getId());
-            System.out.println("findMember.getName() = " + findMember.getName());
+            List<Member> result = em.createQuery("select m from Member as m", Member.class)
+                    .setFirstResult(1)
+                    .setMaxResults(8)
+                    .getResultList();
 
-            //update
-            findMember.setName("HelloJPA");
-
-            //delete
-//            em.remove(findMember);
-
+            for (Member member : result) {
+                System.out.println("member.namer = " + member.getName());
+            }
+            
             tx.commit();
         } catch (Exception e) {
             System.out.println("몬가 문제가 있음");
