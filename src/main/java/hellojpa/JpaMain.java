@@ -7,7 +7,6 @@ import javax.persistence.Persistence;
 
 public class JpaMain {
     public static void main(String[] args) {
-        System.out.println("왜안돼");
         // 프로젝트 실행시 팩토리 생성, 종료시 close
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         // 한 유저의 일련의 작업동안 매니저를 생성, 종료시 close
@@ -16,16 +15,20 @@ public class JpaMain {
         EntityTransaction tx = em.getTransaction();
         tx.begin();
         try {
-            Member member = new Member();
-    //        member.setId(1L);
-    //        member.setName("HelloA");
-            member.setId(2L);
-            member.setName("HelloB");
+            //read
+            Member findMember = em.find(Member.class, 2L);
+            System.out.println("findMember.getId() = " + findMember.getId());
+            System.out.println("findMember.getName() = " + findMember.getName());
 
-            em.persist(member);
+            //update
+            findMember.setName("HelloJPA");
+
+            //delete
+//            em.remove(findMember);
 
             tx.commit();
         } catch (Exception e) {
+            System.out.println("몬가 문제가 있음");
             tx.rollback();
         } finally {
             em.close();
